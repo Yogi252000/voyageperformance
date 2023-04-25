@@ -6,3 +6,4 @@ streamlit-option-menu
 statsmodels
 gspread
 oauth2client
+DETA_KEY = d0bgp7qcgt3_zM7iwUTCX7uh1tUE3WmP5xBWs8rbAKyw
