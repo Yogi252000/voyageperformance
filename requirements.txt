@@ -1,9 +1,8 @@
-streamlit
-pandas
-plotly
-pip
-streamlit-option-menu
-statsmodels
-gspread
-oauth2client
+streamlit==1.21.0
+plotly==5.14.1
+pip==23.1.1
+streamlit-option-menu==0.3.2
+statsmodels==0.13.5
+gspread==5.8.0
+oauth2client==4.1.3
 
