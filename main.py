@@ -1,16 +1,31 @@
+
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import gspread
+import streamlit as st
+from oauth2client.service_account import ServiceAccountCredentials
+import PyPDF2 as PyPDF2
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
+import pdfkit
 from plotly.subplots import make_subplots
 from plotly.validators.layout import margin
 from streamlit_option_menu import option_menu
 import base64
-import pdfkit
+import gspread
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm, inch
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.utils import ImageReader
+from selenium import webdriver
+import time
+from reportlab.pdfgen import canvas
+import io
+
 
 st.set_page_config(page_title='VESSEL PERFORMANCE REPORT', layout="wide", page_icon='🚢')
 
@@ -27,7 +42,7 @@ hide_st_style = """
 # Set up authentication
 
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("key.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/asus/PycharmProjects/Sample report/key.json", scope)
 client = gspread.authorize(creds)
 
 # Select the worksheet by name
@@ -53,7 +68,7 @@ port1 = st.text_input("Arrival Port Name")
 draft = st.text_input("Draft(Forward)")
 aft = st.text_input("Draft(Aftward)")
 dis = st.text_input("Displacement")
-cargo = st.number_input("Cargo Quantity")
+cargo = st.number_input("Total cargo loaded onboard")
 time_elapsed = st.number_input("Time Elapsed from Last Report")
 instructed_speed = st.number_input("Instructed Speed ")
 wind_force = st.selectbox("Wind Force",(0,1,2,3,4,5,6,7,8,9,10))
@@ -63,11 +78,12 @@ state_of_sea = st.selectbox("State of Sea",(0,1,2,3,4,5))
 current_speed = st.number_input("Current Speed (Knots)")
 current_direction = st.selectbox('Current Direction', ('Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
 main_engine_rpm = st.number_input("Main Engine RPM")
-average_slip = st.number_input("Average Slip(%)")
-average_main_engine_power = st.number_input("Average Main Engine Power in KW")
+average_slip = st.number_input("Slip(%)")
+average_main_engine_power = st.number_input(" Main Engine Power in KW")
 additional = st.number_input("Additional AE Running Hour")
 total_generator_power = st.number_input("Total Generator Power (KW)")
 total_generator_running_hour = st.number_input("Total Generator Running Hour")
+distance = st.number_input("Distance Travelled (NM)")
 fresh_water_production = st.number_input("Fresh water Production in MT")
 ballast_exchange = st.selectbox('Any AE Running Attributed To Ballast Exchange / Deck Wash/Maneuvering etc', ('NA', 'Ballast Exchange', 'Manoeuvring', 'Deck Wash', 'Maintenance', 'Other Reasons'))
 vessel_remarks = st.text_area("Vessel Remarks")
@@ -307,12 +323,12 @@ elif should == 'Vessel Instructed to go in FULL Speed':
                 st.warning("Please provide a reason for not meeting the CP Requirement.")
 
 
-
-voyage_no = st.number_input("Voyage No")
+st.subheader("PERFORMANCE GRAPH")
+voyage_no = st.text_input("Voyage No")
 cp_speed = st.number_input("Instructed Speed")
 vessel_speed = st.number_input("Actual Vessel Speed")
 cp_fo = st.number_input("Instructed CP FO Cons")
-vessel_fo = st.number_input("Actual FO Cons")
+vessel_fo = st.number_input("Actual FO Cons (ME+AE)")
 
 trace_cp_speed = go.Scatter(
         x=[voyage_no],
@@ -361,24 +377,20 @@ st.plotly_chart(fig)
 
 # Get user input
 
-date2 = st.date_input("UTCDate")
-ge = st.number_input("Total GE Running Hour")
-add = st.number_input("Additional Running Hour")
-
-
 trace_ge = go.Bar(
-        x=[date2],
-        y=[ge],
+        x=[date],
+        y=[total_generator_running_hour],
         width=0.2,
         name="Total GE Running Hour",
     )
 
 trace_add = go.Bar(
-        x=[date2],
-        y=[add],
+        x=[date],
+        y=[additional],
         width=0.2,
         name="Additional Running Hour",
     )
+
 
 
 data = [trace_ge, trace_add]
@@ -394,4 +406,40 @@ layout = go.Layout(
 fig1 = go.Figure(data=data, layout=layout)
 st.plotly_chart(fig1)
 
+import streamlit as st
+import requests
+
+PDFSHIFT_API_KEY = "25221f3903f24086883fc575ebbfded8"
+
+def create_pdfshift_button(url, output_filename):
+    payload = {
+        "source": url,
+        "fileName": output_filename
+    }
+    headers = {
+        "Authorization": f"Bearer {PDFSHIFT_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    response = requests.post("https://api.pdfshift.io/v3/convert/pdf", json=payload, headers=headers)
+    if response.status_code == 200:
+        st.success("PDF created successfully!")
+        download_link = get_download_link(response.json()["url"], output_filename)
+        st.markdown(download_link, unsafe_allow_html=True)
+    else:
+        st.error("Failed to create PDF")
+
+def get_download_link(url, output_filename):
+    html = f'<a href="{url}" target="_blank" download="{output_filename}">Download PDF</a>'
+    return html
+
+url = st.text_input("Enter URL to convert to PDF:")
+output_filename = st.text_input("Enter output filename (without extension):")
+
+if st.button("Export to PDF"):
+    if not url:
+        st.error("Please enter a URL to convert")
+    elif not output_filename:
+        st.error("Please enter an output filename")
+    else:
+        create_pdfshift_button(url, output_filename + ".pdf")
 
