@@ -10,7 +10,7 @@ from plotly.subplots import make_subplots
 from plotly.validators.layout import margin
 from streamlit_option_menu import option_menu
 import base64
-
+import pdfkit
 
 st.set_page_config(page_title='VESSEL PERFORMANCE REPORT', layout="wide", page_icon='🚢')
 
@@ -394,4 +394,33 @@ layout = go.Layout(
 fig1 = go.Figure(data=data, layout=layout)
 st.plotly_chart(fig1)
 
+def download_pdf():
+    path_wkhtmltopdf = r'C:\Users\asus\PycharmProjects\Sample report\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
+    pdfkit.from_url('http://localhost:8501', 'VPR.pdf', configuration=config)
+
+    options = {
+        'page-size': 'A4',
+        'margin-top': '0mm',
+        'margin-right': '0mm',
+        'margin-bottom': '0mm',
+        'margin-left': '0mm',
+        'encoding': 'UTF-8',
+        'no-outline': None,
+        'footer-center': '[page]/[toPage]',
+        'footer-font-size': '8',
+        'footer-spacing': '5',
+        'header-spacing': '5',
+        'header-font-size': '10',
+        'header-center': 'My Header',
+        'header-line': None,
+        'footer-line': None,
+        'disable-smart-shrinking': None,
+        'dpi': '96',
+        'quiet': ''
+    }
+
+if st.button('Download as PDF'):
+    download_pdf()
+    st.success('Download successful!')
