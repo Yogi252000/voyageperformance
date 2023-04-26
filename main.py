@@ -1,30 +1,14 @@
 
 import streamlit as st
-import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import gspread
-import streamlit as st
-from oauth2client.service_account import ServiceAccountCredentials
-import PyPDF2 as PyPDF2
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import streamlit as st
-from oauth2client.service_account import ServiceAccountCredentials
-import pdfkit
 from plotly.subplots import make_subplots
 from plotly.validators.layout import margin
 from streamlit_option_menu import option_menu
 import base64
 import gspread
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import mm, inch
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.utils import ImageReader
-from selenium import webdriver
-import time
-from reportlab.pdfgen import canvas
-import io
+import requests
 
 
 st.set_page_config(page_title='VESSEL PERFORMANCE REPORT', layout="wide", page_icon='🚢')
