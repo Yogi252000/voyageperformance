@@ -1,14 +1,30 @@
 
 import streamlit as st
+import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import gspread
+import streamlit as st
+from oauth2client.service_account import ServiceAccountCredentials
+import PyPDF2 as PyPDF2
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import streamlit as st
+from oauth2client.service_account import ServiceAccountCredentials
+import pdfkit
 from plotly.subplots import make_subplots
 from plotly.validators.layout import margin
 from streamlit_option_menu import option_menu
 import base64
 import gspread
-import requests
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm, inch
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.utils import ImageReader
+from selenium import webdriver
+import time
+from reportlab.pdfgen import canvas
+import io
 
 
 st.set_page_config(page_title='VESSEL PERFORMANCE REPORT', layout="wide", page_icon='🚢')
@@ -92,17 +108,17 @@ if should == 'Vessel Instructed to go in ECO Speed':
 
     if should1 == 'LADEN':
         st.write("CHARTER PARTY ECO SPEED- LADEN ")
-        eco_laden = st.text_input("Charter Party Eco Speed - Laden : ")
-        me_laden = st.text_input("Charter Party Main Engine Consumption - ECO Speed (Laden)")
-        aux_laden = st.text_input("Charter Party Auxiliary Engine Consumption - ECO Speed (Laden) ")
+        eco_laden = st.number_input("Charter Party Eco Speed - Laden : ")
+        me_laden = st.number_input("Charter Party Main Engine Consumption - ECO Speed (Laden)")
+        aux_laden = st.number_input("Charter Party Auxiliary Engine Consumption - ECO Speed (Laden) ")
         total = me_laden + aux_laden
         st.write("Charter Party Total Con (ME + AE) :")
         st.write(total)
 
         st.write("ACTUAL SPEED & FO CONSUMPTION")
 
-        actual_speed = st.text_input("Actual Vessel Speed : ")
-        vessel_con = st.text_input("Actual Total FO Consumption (ME+AE): ")
+        actual_speed = st.number_input("Actual Vessel Speed : ")
+        vessel_con = st.number_input("Actual Total FO Consumption (ME+AE): ")
 
         if actual_speed <= eco_laden:
 
@@ -145,16 +161,16 @@ if should == 'Vessel Instructed to go in ECO Speed':
 
         st.write("CHARTER PARTY ECO SPEED - BALLAST")
         eco_ballast = st.number_input("Charter Party Eco Speed - ballast : ")
-        me_eco = st.text_input("Charter Party Main Engine Consumption - ECO Speed (Ballast) ")
-        aux_eco = st.text_input("Charter Party Auxiliary Engine Consumption - ECO Speed (Ballast) ")
+        me_eco = st.number_input("Charter Party Main Engine Consumption - ECO Speed (Ballast) ")
+        aux_eco = st.number_input("Charter Party Auxiliary Engine Consumption - ECO Speed (Ballast) ")
         total1 = me_eco + aux_eco
         st.write("Charter Party Total Con (ME + AE) :")
         st.write(total1)
 
         st.write("ACTUAL SPEED & FO CONSUMPTION")
 
-        actual_speed1 = st.text_input("Actual Vessel Speed : ")
-        vessel_con1 = st.text_input("Actual Total FO Consumption (ME+AE): ")
+        actual_speed1 = st.number_input("Actual Vessel Speed : ")
+        vessel_con1 = st.number_input("Actual Total FO Consumption (ME+AE): ")
 
         if actual_speed1 <= eco_ballast:
 
@@ -201,17 +217,17 @@ elif should == 'Vessel Instructed to go in FULL Speed':
     if should1 == 'LADEN':
 
         st.write("CHARTER PARTY FULL SPEED - LADEN")
-        full_laden = st.text_input("Charter Party Full Speed - Laden : ")
-        me_full = st.text_input("Charter Party Main Engine Consumption - Full Speed (Laden)")
-        aux_full = st.text_input("Charter Party Auxiliary Engine Consumption - Full Speed (Laden)")
+        full_laden = st.number_input("Charter Party Full Speed - Laden : ")
+        me_full = st.number_input("Charter Party Main Engine Consumption - Full Speed (Laden)")
+        aux_full = st.number_input("Charter Party Auxiliary Engine Consumption - Full Speed (Laden)")
         total2 = me_full + aux_full
         st.write("Charter Party Total Con (ME + AE) :")
         st.write(total2)
 
         st.write("ACTUAL SPEED & FO CONSUMPTION")
 
-        actual_speed2 = st.text_input("Actual Vessel Speed : ")
-        vessel_con2 = st.text_input("Actual Total FO Consumption (ME+AE): ")
+        actual_speed2 = st.number_input("Actual Vessel Speed : ")
+        vessel_con2 = st.number_input("Actual Total FO Consumption (ME+AE): ")
 
         if actual_speed2 <= full_laden:
 
@@ -254,17 +270,17 @@ elif should == 'Vessel Instructed to go in FULL Speed':
     elif should1 == 'BALLAST':
 
         st.write("CHARTER PARTY FULL SPEED - BALLAST")
-        full_ballast = st.text_input("Charter Party Full Speed - Ballast : ")
-        me_ballast = st.text_input("Charter Party Main Engine Consumption - Full Speed (Ballast) ")
-        aux_ballast = st.text_input("Charter Party Auxiliary Engine Consumption - Full Speed (Ballast) ")
+        full_ballast = st.number_input("Charter Party Full Speed - Ballast : ")
+        me_ballast = st.number_input("Charter Party Main Engine Consumption - Full Speed (Ballast) ")
+        aux_ballast = st.number_input("Charter Party Auxiliary Engine Consumption - Full Speed (Ballast) ")
         total3 = me_ballast + aux_ballast
         st.write("Charter Party Total Con (ME + AE) :")
         st.write(total3)
 
         st.write("ACTUAL SPEED & FO CONSUMPTION")
 
-        actual_speed3 = st.text_input("Actual Vessel Speed : ")
-        vessel_con3 = st.text_input("Actual Total FO Consumption (ME+AE): ")
+        actual_speed3 = st.number_input("Actual Vessel Speed : ")
+        vessel_con3 = st.number_input("Actual Total FO Consumption (ME+AE): ")
 
 
         if actual_speed3 <= full_ballast:
@@ -302,8 +318,6 @@ elif should == 'Vessel Instructed to go in FULL Speed':
                     st.warning("Data not submitted.")
             else:
                 st.warning("Please provide a reason for not meeting the CP Requirement.")
-
-
 
 
 
