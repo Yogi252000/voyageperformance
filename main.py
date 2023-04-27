@@ -13,7 +13,7 @@ import requests
 
 st.set_page_config(page_title='VESSEL PERFORMANCE REPORT', layout="wide", page_icon='🚢')
 
-st.write("<h1 style='text-align: center;'>VESSEL PERFORMANCE REPORT</h1>", unsafe_allow_html=True)
+st.write("<h1 style='text-align: left;'>VESSEL PERFORMANCE REPORT</h1>", unsafe_allow_html=True)
 
 
 
