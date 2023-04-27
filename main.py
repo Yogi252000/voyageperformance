@@ -26,7 +26,7 @@ hide_st_style = """
 # Set up authentication
 
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/asus/PycharmProjects/Sample report/key.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name("key.json", scope)
 client = gspread.authorize(creds)
 
 # Select the worksheet by name
