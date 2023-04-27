@@ -307,37 +307,4 @@ elif should == 'Vessel Instructed to go in FULL Speed':
                 st.warning("Please provide a reason for not meeting the CP Requirement.")
 
 
-st.subheader("PERFORMANCE GRAPH")
 
-#NEXT GRAPH
-
-# Get user input
-
-trace_ge = go.Bar(
-        x=[date],
-        y=[total_generator_running_hour],
-        width=0.2,
-        name="Total GE Running Hour",
-    )
-
-trace_add = go.Bar(
-        x=[date],
-        y=[additional],
-        width=0.2,
-        name="Additional Running Hour",
-    )
-
-
-
-data = [trace_ge, trace_add]
-
-
-layout = go.Layout(
-        title="AUXILIARY ENGINE EXTRA RUNNING HOURS",
-        xaxis=dict(title="UTC Date"),
-        barmode='stack'
-    )
-
-
-fig1 = go.Figure(data=data, layout=layout)
-st.plotly_chart(fig1)
