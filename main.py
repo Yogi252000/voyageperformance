@@ -308,54 +308,6 @@ elif should == 'Vessel Instructed to go in FULL Speed':
 
 
 st.subheader("PERFORMANCE GRAPH")
-voyage_no = st.text_input("Voyage No")
-cp_speed = st.number_input("Instructed Speed")
-vessel_speed = st.number_input("Actual Vessel Speed")
-cp_fo = st.number_input("Instructed CP FO Cons")
-vessel_fo = st.number_input("Actual FO Cons (ME+AE)")
-
-trace_cp_speed = go.Scatter(
-        x=[voyage_no],
-        y=[cp_speed],
-        name="Instructed Speed",
-    )
-
-
-trace_vessel_speed = go.Scatter(
-        x=[voyage_no],
-        y=[vessel_speed],
-        name="Actual Vessel Speed",
-    )
-
-
-trace_cp_fo = go.Scatter(
-        x=[voyage_no],
-        y=[cp_fo],
-        name="Instructed CP FO Cons",
-    )
-
-
-trace_vessel_fo = go.Scatter(
-        x=[voyage_no],
-        y=[vessel_fo],
-        name="Actual FO Cons",
-    )
-
-
-data = [trace_cp_speed, trace_vessel_speed, trace_cp_fo, trace_vessel_fo]
-
-
-layout = go.Layout(
-        title=" VOYAGE PERFORMANCE WITH RESPECT TO CHARTER PARTY",
-        xaxis=dict(title="Voyage Number"),
-        #yaxis=dict(title="Instructed Speed,Actual Vessel Speed,Instructed CP FO Cons,"),
-    )
-
-
-fig = go.Figure(data=data, layout=layout)
-
-
-st.plotly_chart(fig)
 
 #NEXT GRAPH
 
@@ -389,41 +341,3 @@ layout = go.Layout(
 
 fig1 = go.Figure(data=data, layout=layout)
 st.plotly_chart(fig1)
-
-import streamlit as st
-import requests
-
-PDFSHIFT_API_KEY = "25221f3903f24086883fc575ebbfded8"
-
-def create_pdfshift_button(url, output_filename):
-    payload = {
-        "source": url,
-        "fileName": output_filename
-    }
-    headers = {
-        "Authorization": f"Bearer {PDFSHIFT_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    response = requests.post("https://api.pdfshift.io/v3/convert/pdf", json=payload, headers=headers)
-    if response.status_code == 200:
-        st.success("PDF created successfully!")
-        download_link = get_download_link(response.json()["url"], output_filename)
-        st.markdown(download_link, unsafe_allow_html=True)
-    else:
-        st.error("Failed to create PDF")
-
-def get_download_link(url, output_filename):
-    html = f'<a href="{url}" target="_blank" download="{output_filename}">Download PDF</a>'
-    return html
-
-url = st.text_input("Enter URL to convert to PDF:")
-output_filename = st.text_input("Enter output filename (without extension):")
-
-if st.button("Export to PDF"):
-    if not url:
-        st.error("Please enter a URL to convert")
-    elif not output_filename:
-        st.error("Please enter an output filename")
-    else:
-        create_pdfshift_button(url, output_filename + ".pdf")
-
