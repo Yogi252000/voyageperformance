@@ -26,7 +26,7 @@ hide_st_style = """
 # Set up authentication
 
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("key.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/asus/PycharmProjects/Sample report/key.json", scope)
 client = gspread.authorize(creds)
 
 # Select the worksheet by name
@@ -52,23 +52,23 @@ port1 = st.text_input("Arrival Port Name")
 draft = st.text_input("Draft(Forward)")
 aft = st.text_input("Draft(Aftward)")
 dis = st.text_input("Displacement")
-cargo = st.number_input("Total cargo loaded onboard")
-time_elapsed = st.number_input("Time Elapsed from Last Report")
-instructed_speed = st.number_input("Instructed Speed ")
+cargo = st.text_input("Total cargo loaded onboard")
+time_elapsed = st.text_input("Time Elapsed from Last Report")
+instructed_speed = st.text_input("Instructed Speed ")
 wind_force = st.selectbox("Wind Force",(0,1,2,3,4,5,6,7,8,9,10))
 actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
 relative_wind_direction = st.selectbox('Relative Wind Direction', ('Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
 state_of_sea = st.selectbox("State of Sea",(0,1,2,3,4,5))
-current_speed = st.number_input("Current Speed (Knots)")
+current_speed = st.text_input("Current Speed (Knots)")
 current_direction = st.selectbox('Current Direction', ('Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
-main_engine_rpm = st.number_input("Main Engine RPM")
-average_slip = st.number_input("Slip(%)")
-average_main_engine_power = st.number_input(" Main Engine Power in KW")
-additional = st.number_input("Additional AE Running Hour")
-total_generator_power = st.number_input("Total Generator Power (KW)")
-total_generator_running_hour = st.number_input("Total Generator Running Hour")
-distance = st.number_input("Distance Travelled (NM)")
-fresh_water_production = st.number_input("Fresh water Production in MT")
+main_engine_rpm = st.text_input("Main Engine RPM")
+average_slip = st.text_input("Slip(%)")
+average_main_engine_power = st.text_input(" Main Engine Power in KW")
+additional = st.text_input("Additional AE Running Hour")
+total_generator_power = st.text_input("Total Generator Power (KW)")
+total_generator_running_hour = st.text_input("Total Generator Running Hour")
+distance = st.text_input("Distance Travelled (NM)")
+fresh_water_production = st.text_input("Fresh water Production in MT")
 ballast_exchange = st.selectbox('Any AE Running Attributed To Ballast Exchange / Deck Wash/Maneuvering etc', ('NA', 'Ballast Exchange', 'Manoeuvring', 'Deck Wash', 'Maintenance', 'Other Reasons'))
 vessel_remarks = st.text_area("Vessel Remarks")
 
@@ -77,15 +77,12 @@ if st.button('Save Data'):
         worksheet.append_row([name,laden,voyage,date_str,time_str,port,date1_str,time1_str,port1,draft,aft,dis,cargo,
                                time_elapsed, instructed_speed, wind_force, actual_wind_direction, relative_wind_direction,
                               state_of_sea, current_speed, current_direction,main_engine_rpm, average_slip, average_main_engine_power,
-                              total_generator_power, total_generator_running_hour, fresh_water_production,
+                              total_generator_power, total_generator_running_hour,distance, fresh_water_production,
                               ballast_exchange, vessel_remarks])
 
         # Notify the user that the data has been stored
         st.success("Data saved")
 
-
-# Select the worksheet by name
-worksheet = client.open("Vessel Performance").worksheet("Sheet2")
 
 should = st.selectbox('Instructed speed by Charter party',('Vessel Instructed to go in ECO Speed', 'Vessel Instructed to go in FULL Speed'))
 
@@ -305,6 +302,10 @@ elif should == 'Vessel Instructed to go in FULL Speed':
                     st.warning("Data not submitted.")
             else:
                 st.warning("Please provide a reason for not meeting the CP Requirement.")
+
+
+
+
 
 
 
