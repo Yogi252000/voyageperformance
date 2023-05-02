@@ -31,7 +31,6 @@ name = st.selectbox('Vessel Name' ,('GCL YAMUNA','GCL NARMADA','GCL GANGA','GCL 
     'DAIWAN KALON','AMIS WISDOM II','AMIS ELEGANCE','NALUHU','AMIS FORTUNE','AMIS WISDOM III','BUNUN QUEEN','AM KIRTI','TRUE CARTIER','AMIS WISDOM I','DAIWAN INFINITY'
       ,'DAIWAN HERO','AMIS KALON','BUNUN WISDOM','AM UMANG','AMIS BRAVE','AMIS LEADER','FRONTIER BONANZA','CORECOEAN OL','BUNUN XCEL',
            'BLUE HORIZON','AMIS ACE','ETERNITY SW','SAKIZAYA RESPECT','AMIS NATURE','AMIS INTEGRITY','AMIS JUSTICE' ))
-laden = st.selectbox('Laden/Ballast', ('Laden', 'Ballast'))
 voyage = st.text_input("Voyage Number")
 date = st.date_input("UTC Date (Departure)")
 date_str = date.strftime("%Y-%m-%d")
@@ -48,7 +47,6 @@ aft = st.text_input("Draft(Aftward)")
 dis = st.text_input("Displacement")
 cargo = st.text_input("Total cargo loaded onboard")
 time_elapsed = st.text_input("Time Elapsed from Last Report")
-instructed_speed = st.text_input("Instructed Speed ")
 wind_force = st.selectbox("Wind Force",(0,1,2,3,4,5,6,7,8,9,10))
 actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
 relative_wind_direction = st.selectbox('Relative Wind Direction', ('Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
@@ -58,7 +56,6 @@ current_direction = st.selectbox('Current Direction', ('Starboard Tail', 'Port Q
 main_engine_rpm = st.text_input("Main Engine RPM")
 average_slip = st.text_input("Slip(%)")
 average_main_engine_power = st.text_input(" Main Engine Power in KW")
-additional = st.text_input("Additional AE Running Hour")
 total_generator_power = st.text_input("Total Generator Power (KW)")
 total_generator_running_hour = st.text_input("Total Generator Running Hour")
 distance = st.text_input("Distance Travelled (NM)")
@@ -68,8 +65,8 @@ vessel_remarks = st.text_area("Vessel Remarks")
 
 
 if st.button('Save Data'):
-        worksheet.append_row([name,laden,voyage,date_str,time_str,port,date1_str,time1_str,port1,draft,aft,dis,cargo,
-                               time_elapsed, instructed_speed, wind_force, actual_wind_direction, relative_wind_direction,
+        worksheet.append_row([name,voyage,date_str,time_str,port,date1_str,time1_str,port1,draft,aft,dis,cargo,
+                               time_elapsed, wind_force, actual_wind_direction, relative_wind_direction,
                               state_of_sea, current_speed, current_direction,main_engine_rpm, average_slip, average_main_engine_power,
                               total_generator_power, total_generator_running_hour,distance, fresh_water_production,
                               ballast_exchange, vessel_remarks])
