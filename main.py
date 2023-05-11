@@ -5,9 +5,9 @@ import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
 import gspread
 
-st.set_page_config(page_title='VESSEL PERFORMANCE REPORT', layout="wide", page_icon='🚢')
+st.set_page_config(page_title='VOYAGE PERFORMANCE REPORT', layout="wide", page_icon='🚢')
 
-st.write("<h1 style='text-align: left;'>VESSEL PERFORMANCE REPORT</h1>", unsafe_allow_html=True)
+st.write("<h1 style='text-align: left;'>VOYAGE PERFORMANCE REPORT</h1>", unsafe_allow_html=True)
 
 
 
