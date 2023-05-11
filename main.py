@@ -26,273 +26,347 @@ client = gspread.authorize(creds)
 # Select the worksheet by name
 worksheet = client.open("Vessel Performance").worksheet("Sheet42")
 
+# User input
+vessel_name = st.selectbox('Vessel Name', ('GCL Yamuna', 'GCL Mahanadi','GCL Ganga','GCL Sabarmati','GCL Narmada','GCL Tapi','AM Tarang','AM Kirti',
+                                           'AM Umang','Vinayak','True Cartier','Bunun Wisdom','Amis Wisdom I','Amis Wisdom II','Amis Wisdom III',
+                                           'Amis Kalon','Daiwan Kalon','Daiwan Infinity','Daiwan Hero','Bunun Queen','Amis Brave','Amis Leader',
+                                           'Frontier Bonanza','Coreocean OL','Bunun xcel','Blue Horizon','Amis Ace','Eternity SW','Sakizaya Respect',
+                                           'Amis Nature', 'Amis Integrity','Amis Justice','Naluhu','Bunun Kalon','Amis Fortune','Amis Elegance'))
 
-name = st.selectbox('Vessel Name' ,('GCL YAMUNA','GCL NARMADA','GCL GANGA','GCL MAHANADI','GCL TAPI','GCL SABARMATI','BUNUN KALON','VINAYAK','AM TARANG'
-    'DAIWAN KALON','AMIS WISDOM II','AMIS ELEGANCE','NALUHU','AMIS FORTUNE','AMIS WISDOM III','BUNUN QUEEN','AM KIRTI','TRUE CARTIER','AMIS WISDOM I','DAIWAN INFINITY'
-      ,'DAIWAN HERO','AMIS KALON','BUNUN WISDOM','AM UMANG','AMIS BRAVE','AMIS LEADER','FRONTIER BONANZA','CORECOEAN OL','BUNUN XCEL',
-           'BLUE HORIZON','AMIS ACE','ETERNITY SW','SAKIZAYA RESPECT','AMIS NATURE','AMIS INTEGRITY','AMIS JUSTICE' ))
+laden_ballast = st.selectbox('Laden/Ballast', ('Laden', 'Ballast'))
 voyage = st.text_input("Voyage Number")
-date = st.date_input("UTC Date (Departure)")
-date_str = date.strftime("%Y-%m-%d")
-time = st.time_input("UTC Time (Departure)")
-time_str = time.strftime('%H:%M:%S')
-port = st.text_input("Departure Port Name")
-date1 = st.date_input("UTC Date (Arrival)")
-date1_str = date1.strftime("%Y-%m-%d")
-time1 = st.time_input("UTC Time (Arrival)")
-time1_str = time1.strftime('%H:%M:%S')
-port1 = st.text_input("Arrival Port Name")
-draft = st.text_input("Draft(Forward)")
-aft = st.text_input("Draft(Aftward)")
-dis = st.text_input("Displacement")
-cargo = st.text_input("Total cargo loaded onboard")
-time_elapsed = st.text_input("Time Elapsed from Last Report")
-wind_force = st.selectbox("Wind Force",(0,1,2,3,4,5,6,7,8,9,10))
-actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
-relative_wind_direction = st.selectbox('Relative Wind Direction', ('Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
-state_of_sea = st.selectbox("State of Sea",(0,1,2,3,4,5))
-current_speed = st.text_input("Current Speed (Knots)")
-current_direction = st.selectbox('Current Direction', ('Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
-main_engine_rpm = st.text_input("Main Engine RPM")
-average_slip = st.text_input("Slip(%)")
-average_main_engine_power = st.text_input(" Main Engine Power in KW")
-total_generator_power = st.text_input("Total Generator Power (KW)")
-total_generator_running_hour = st.text_input("Total Generator Running Hour")
-distance = st.text_input("Distance Travelled (NM)")
-fresh_water_production = st.text_input("Fresh water Production in MT")
-ballast_exchange = st.selectbox('Any AE Running Attributed To Ballast Exchange / Deck Wash/Maneuvering etc', ('NA', 'Ballast Exchange', 'Manoeuvring', 'Deck Wash', 'Maintenance', 'Other Reasons'))
-vessel_remarks = st.text_area("Vessel Remarks")
+
+st.subheader('Report Type')
+report_type = st.selectbox('Select Report Type',('Commencement of Sea Passage to Noon', 'Noon to Noon','Noon to End of Sea Passage'))
+
+if report_type == "Commencement of Sea Passage to Noon":
+    date = st.date_input("UTC Date (Departure)")
+    date_str = date.strftime("%Y-%m-%d")
+    time = st.time_input("UTC Time (Departure)")
+    time_str = time.strftime('%H:%M:%S')
+
+    nd = st.date_input("Noon Date (UTC)")
+    nd_str = nd.strftime("%Y-%m-%d")
+    tg = st.time_input("Noon Time (UTC)")
+    tg_str = time.strftime('%H:%M:%S')
+
+    port = st.text_input("Departure Port Name")
+    draft = st.text_input("Draft(Forward) (m)")
+    aft = st.text_input("Draft(Aftward) (m)")
+    dis = st.text_input("Displacement (Ton)")
+    cargo = st.text_input("Total cargo loaded onboard (MT)")
+    time_elapsed = st.text_input("Time Elapsed from Last Report")
+    wind_force = st.selectbox("Wind Force", (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
+    relative_wind_direction = st.selectbox('Relative Wind Direction', (
+    'Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
+    state_of_sea = st.selectbox("State of Sea", (0, 1, 2, 3, 4, 5))
+    current_speed = st.text_input("Current Speed (Knots)")
+    current_direction = st.selectbox('Current Direction', (
+    'Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam', 'Starboard Quarter'))
+    main_engine_rpm = st.text_input("Main Engine RPM")
+    average_slip = st.text_input("Slip(%)")
+    average_main_engine_power = st.text_input(" Main Engine Power(KW)")
+    total_generator_power = st.text_input("Total Generator Power (KW)")
+    total_generator_running_hour = st.text_input("Total Generator Running Hour (Hrs)")
+    distance = st.text_input("Distance Travelled (NM)")
+    fresh_water_production = st.text_input("Fresh water Production (MT)")
+    ballast_exchange = st.selectbox('Any AE Running Attributed To Ballast Exchange / Deck Wash/Maneuvering etc', (
+    'NA', 'Ballast Exchange', 'Manoeuvring', 'Deck Wash', 'Maintenance', 'Other Reasons'))
+    vessel_remarks = st.text_area("Vessel Remarks")
+
+    st.subheader("SPEED & FO CONSUMPTION ")
+    should = st.selectbox('Instructed speed by Charter party',
+                          ('Vessel Instructed to go in ECO Speed', 'Vessel Instructed to go in FULL Speed'))
+
+    speed_input = st.number_input("Enter the Charter Party Speed (Particular Voyage)")
+    actual_speed = st.number_input("Actual Vessel Speed  ")
+
+    if actual_speed >= speed_input:
+        st.success("Vessel Speed meets CP Requirement")
+    else:
+        st.error("Vessel Speed not meeting  CP Requirement")
+        reason = st.text_area("Reason for not meeting the CP Requirement")
+
+    # Sheet name based on user input
+    sheet_name = f"{vessel_name}"
+
+    data = None
+    try:
+        # Open the specific sheet based on user input
+        gc = gspread.authorize(creds)
+        spreadsheet = gc.open('Vessel Performance')
+        sheet = spreadsheet.worksheet(sheet_name)
+        data = sheet.get_all_records()
+    except gspread.exceptions.WorksheetNotFound:
+        st.warning(f"No data found for {vessel_name} - {laden_ballast}.")
+
+    # Find the corresponding row based on user input (assuming 'speed' is a column in the sheet)
+    matching_row = None
+    if data:
+        for row in data:
+            if laden_ballast == 'Laden' and row['LADEN SPEED'] == speed_input:
+                matching_row = row
+                break
+            elif laden_ballast == 'Ballast' and row['BALLAST SPEED'] == speed_input:
+                matching_row = row
+                break
+
+    # Pre-fill the input fields with the retrieved data
+
+    total_VLSFO = 0
+    if matching_row:
+        if laden_ballast == 'Laden':
+            full_laden = st.number_input("CHARTER PARTY SPEED ", value=matching_row['LADEN SPEED'], key='charter_speed',
+                                         disabled=True)
+            me_full = st.number_input("CHARTER PARTY ME FO CONS", value=matching_row['LADEN ME FO CONS'], key='me_cons',
+                                      disabled=True)
+            aux_full = st.number_input("CHARTER PARTY AE FO CONS", value=matching_row['LADEN AE FO CONS'],
+                                       key='ae_cons', disabled=True)
+            total_VLSFO = st.number_input(" CHARTER PARTY VLSFO CONS", value=matching_row['LADEN VLSFO CONS'],
+                                          key='vlsfo_cons', disabled=True)
+        elif laden_ballast == 'Ballast':
+            full_laden = st.number_input("CHARTER PARTY SPEED ", value=matching_row['BALLAST SPEED'],
+                                         key='charter_speed', disabled=True)
+            me_full = st.number_input("CHARTER PARTY ME FO CONS ", value=matching_row['BALLAST ME FO CONS'],
+                                      key='me_cons', disabled=True)
+            aux_full = st.number_input("CHARTER PARTY AE FO CONS ", value=matching_row['BALLAST AE FO CONS'],
+                                       key='ae_cons', disabled=True)
+            total_VLSFO = st.number_input(" CHARTER PARTY VLSFO CONS", value=matching_row['BALLAST VLSFO CONS'],
+                                          key='vlsfo_cons', disabled=True)
+
+    else:
+        st.warning("No data found for the provided speed.")
+
+    vessel_con = st.number_input("Actual Total FO Consumption (ME+AE): ")
+
+    if vessel_con <= total_VLSFO:
+
+        st.success("FO Consumption meets CP Requirement")
+
+    else:
+        st.error("FO Consumption exceeds CP Requirement")
+        reason2 = st.text_area("Reason for over consuming :")
+        extra = vessel_con - total_VLSFO
+        rounded_number = round(extra, 2)
+        st.write(rounded_number, " MT FO Consumed Extra")
+
+elif report_type == "Noon to Noon":
+    last = st.date_input("Last noon Date (UTC)")
+    last_str = last.strftime("%Y-%m-%d")
+    t = st.time_input("Last noon Time (UTC)")
+    t_str = t.strftime('%H:%M:%S')
+    current = st.date_input("Current Noon Date (UTC)")
+    current = current.strftime("%Y-%m-%d")
+    time2 = st.time_input("Current Noon Time (UTC)")
+    time2_str = time2.strftime('%H:%M:%S')
+    time_elapsed = st.text_input("Time Elapsed from Last Report")
+    wind_force = st.selectbox("Wind Force", (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
+    relative_wind_direction = st.selectbox('Relative Wind Direction', (
+        'Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam',
+        'Starboard Quarter'))
+    state_of_sea = st.selectbox("State of Sea", (0, 1, 2, 3, 4, 5))
+    current_speed = st.text_input("Current Speed (Knots)")
+    current_direction = st.selectbox('Current Direction', (
+        'Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam',
+        'Starboard Quarter'))
+    main_engine_rpm = st.text_input("Main Engine RPM")
+    average_slip = st.text_input("Slip(%)")
+    average_main_engine_power = st.text_input(" Main Engine Power(KW)")
+    total_generator_power = st.text_input("Total Generator Power (KW)")
+    total_generator_running_hour = st.text_input("Total Generator Running Hour (Hrs)")
+    distance = st.text_input("Distance Travelled (NM)")
+    fresh_water_production = st.text_input("Fresh water Production (MT)")
+    ballast_exchange = st.selectbox('Any AE Running Attributed To Ballast Exchange / Deck Wash/Maneuvering etc', (
+        'NA', 'Ballast Exchange', 'Manoeuvring', 'Deck Wash', 'Maintenance', 'Other Reasons'))
+    vessel_remarks = st.text_area("Vessel Remarks")
+
+    st.subheader("SPEED & FO CONSUMPTION ")
+    should = st.selectbox('Instructed speed by Charter party',
+                          ('Vessel Instructed to go in ECO Speed', 'Vessel Instructed to go in FULL Speed'))
+
+    speed_input = st.number_input("Enter the Charter Party Speed (Particular Voyage)")
+    actual_speed = st.number_input("Actual Vessel Speed  ")
+
+    if actual_speed >= speed_input:
+        st.success("Vessel Speed meets CP Requirement")
+    else:
+        st.error("Vessel Speed not meeting  CP Requirement")
+        reason = st.text_area("Reason for not meeting the CP Requirement")
+
+    # Sheet name based on user input
+    sheet_name = f"{vessel_name}"
+
+    data = None
+    try:
+        # Open the specific sheet based on user input
+        gc = gspread.authorize(creds)
+        spreadsheet = gc.open('Vessel Performance')
+        sheet = spreadsheet.worksheet(sheet_name)
+        data = sheet.get_all_records()
+    except gspread.exceptions.WorksheetNotFound:
+        st.warning(f"No data found for {vessel_name} - {laden_ballast}.")
+
+    # Find the corresponding row based on user input (assuming 'speed' is a column in the sheet)
+    matching_row = None
+    if data:
+        for row in data:
+            if laden_ballast == 'Laden' and row['LADEN SPEED'] == speed_input:
+                matching_row = row
+                break
+            elif laden_ballast == 'Ballast' and row['BALLAST SPEED'] == speed_input:
+                matching_row = row
+                break
+
+    # Pre-fill the input fields with the retrieved data
+
+    total_VLSFO = 0
+    if matching_row:
+        if laden_ballast == 'Laden':
+            full_laden = st.number_input("CHARTER PARTY SPEED ", value=matching_row['LADEN SPEED'], key='charter_speed',
+                                         disabled=True)
+            me_full = st.number_input("CHARTER PARTY ME FO CONS", value=matching_row['LADEN ME FO CONS'], key='me_cons',
+                                      disabled=True)
+            aux_full = st.number_input("CHARTER PARTY AE FO CONS", value=matching_row['LADEN AE FO CONS'],
+                                       key='ae_cons', disabled=True)
+            total_VLSFO = st.number_input(" CHARTER PARTY VLSFO CONS", value=matching_row['LADEN VLSFO CONS'],
+                                          key='vlsfo_cons', disabled=True)
+        elif laden_ballast == 'Ballast':
+            full_laden = st.number_input("CHARTER PARTY SPEED ", value=matching_row['BALLAST SPEED'],
+                                         key='charter_speed', disabled=True)
+            me_full = st.number_input("CHARTER PARTY ME FO CONS ", value=matching_row['BALLAST ME FO CONS'],
+                                      key='me_cons', disabled=True)
+            aux_full = st.number_input("CHARTER PARTY AE FO CONS ", value=matching_row['BALLAST AE FO CONS'],
+                                       key='ae_cons', disabled=True)
+            total_VLSFO = st.number_input(" CHARTER PARTY VLSFO CONS", value=matching_row['BALLAST VLSFO CONS'],
+                                          key='vlsfo_cons', disabled=True)
+
+    else:
+        st.warning("No data found for the provided speed.")
+
+    vessel_con = st.number_input("Actual Total FO Consumption (ME+AE): ")
+
+    if vessel_con <= total_VLSFO:
+
+        st.success("FO Consumption meets CP Requirement")
+
+    else:
+        st.error("FO Consumption exceeds CP Requirement")
+        reason2 = st.text_area("Reason for over consuming :")
+        extra = vessel_con - total_VLSFO
+        rounded_number = round(extra, 2)
+        st.write(rounded_number, " MT FO Consumed Extra")
 
 
-if st.button('Save Data'):
-        worksheet.append_row([name,voyage,date_str,time_str,port,date1_str,time1_str,port1,draft,aft,dis,cargo,
-                               time_elapsed, wind_force, actual_wind_direction, relative_wind_direction,
-                              state_of_sea, current_speed, current_direction,main_engine_rpm, average_slip, average_main_engine_power,
-                              total_generator_power, total_generator_running_hour,distance, fresh_water_production,
-                              ballast_exchange, vessel_remarks])
 
-        # Notify the user that the data has been stored
-        st.success("Data saved")
+elif report_type == "Noon to End of Sea Passage":
+    noon = st.date_input("Last Noon Date(UTC) ")
+    noon_str = noon.strftime("%Y-%m-%d")
+    g = st.time_input("Last Noon Time(UTC)")
+    g_str = g.strftime('%H:%M:%S')
+    date1 = st.date_input("UTC Date (Arrival)")
+    date1_str = date1.strftime("%Y-%m-%d")
+    time1 = st.time_input("UTC Time (Arrival)")
+    time1_str = time1.strftime('%H:%M:%S')
+    port1 = st.text_input("Arrival Port Name")
+    time_elapsed = st.text_input("Time Elapsed from Last Report")
+    wind_force = st.selectbox("Wind Force", (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
+    relative_wind_direction = st.selectbox('Relative Wind Direction', (
+        'Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam',
+        'Starboard Quarter'))
+    state_of_sea = st.selectbox("State of Sea", (0, 1, 2, 3, 4, 5))
+    current_speed = st.text_input("Current Speed (Knots)")
+    current_direction = st.selectbox('Current Direction', (
+        'Starboard Tail', 'Port Quarter', 'Head', 'Port Beam', 'Port Tail', 'Tail', 'Starboard Beam',
+        'Starboard Quarter'))
+    main_engine_rpm = st.text_input("Main Engine RPM")
+    average_slip = st.text_input("Slip(%)")
+    average_main_engine_power = st.text_input(" Main Engine Power(KW)")
+    total_generator_power = st.text_input("Total Generator Power (KW)")
+    total_generator_running_hour = st.text_input("Total Generator Running Hour (Hrs)")
+    distance = st.text_input("Distance Travelled (NM)")
+    fresh_water_production = st.text_input("Fresh water Production (MT)")
+    ballast_exchange = st.selectbox('Any AE Running Attributed To Ballast Exchange / Deck Wash/Maneuvering etc', (
+        'NA', 'Ballast Exchange', 'Manoeuvring', 'Deck Wash', 'Maintenance', 'Other Reasons'))
+    vessel_remarks = st.text_area("Vessel Remarks")
 
+    st.subheader("SPEED & FO CONSUMPTION ")
+    should = st.selectbox('Instructed speed by Charter party',
+                          ('Vessel Instructed to go in ECO Speed', 'Vessel Instructed to go in FULL Speed'))
 
-should = st.selectbox('Instructed speed by Charter party',('Vessel Instructed to go in ECO Speed', 'Vessel Instructed to go in FULL Speed'))
+    speed_input = st.number_input("Enter the Charter Party Speed (Particular Voyage)")
+    actual_speed = st.number_input("Actual Vessel Speed  ")
 
-if should == 'Vessel Instructed to go in ECO Speed':
-    should1 = st.selectbox('Laden/Ballast', ('LADEN', 'BALLAST'))
+    if actual_speed >= speed_input:
+        st.success("Vessel Speed meets CP Requirement")
+    else:
+        st.error("Vessel Speed not meeting  CP Requirement")
+        reason = st.text_area("Reason for not meeting the CP Requirement")
 
+    # Sheet name based on user input
+    sheet_name = f"{vessel_name}"
 
-    if should1 == 'LADEN':
-        st.write("CHARTER PARTY ECO SPEED- LADEN ")
-        eco_laden = st.number_input("Charter Party Eco Speed - Laden : ")
-        me_laden = st.number_input("Charter Party Main Engine Consumption - ECO Speed (Laden)")
-        aux_laden = st.number_input("Charter Party Auxiliary Engine Consumption - ECO Speed (Laden) ")
-        total = me_laden + aux_laden
-        st.write("Charter Party Total Con (ME + AE) :")
-        st.write(total)
+    data = None
+    try:
+        # Open the specific sheet based on user input
+        gc = gspread.authorize(creds)
+        spreadsheet = gc.open('Vessel Performance')
+        sheet = spreadsheet.worksheet(sheet_name)
+        data = sheet.get_all_records()
+    except gspread.exceptions.WorksheetNotFound:
+        st.warning(f"No data found for {vessel_name} - {laden_ballast}.")
 
-        st.write("ACTUAL SPEED & FO CONSUMPTION")
+    # Find the corresponding row based on user input (assuming 'speed' is a column in the sheet)
+    matching_row = None
+    if data:
+        for row in data:
+            if laden_ballast == 'Laden' and row['LADEN SPEED'] == speed_input:
+                matching_row = row
+                break
+            elif laden_ballast == 'Ballast' and row['BALLAST SPEED'] == speed_input:
+                matching_row = row
+                break
 
-        actual_speed = st.number_input("Actual Vessel Speed : ")
-        vessel_con = st.number_input("Actual Total FO Consumption (ME+AE): ")
+    # Pre-fill the input fields with the retrieved data
 
-        if actual_speed <= eco_laden:
+    total_VLSFO = 0
+    if matching_row:
+        if laden_ballast == 'Laden':
+            full_laden = st.number_input("CHARTER PARTY SPEED ", value=matching_row['LADEN SPEED'], key='charter_speed',
+                                         disabled=True)
+            me_full = st.number_input("CHARTER PARTY ME FO CONS", value=matching_row['LADEN ME FO CONS'], key='me_cons',
+                                      disabled=True)
+            aux_full = st.number_input("CHARTER PARTY AE FO CONS", value=matching_row['LADEN AE FO CONS'],
+                                       key='ae_cons', disabled=True)
+            total_VLSFO = st.number_input(" CHARTER PARTY VLSFO CONS", value=matching_row['LADEN VLSFO CONS'],
+                                          key='vlsfo_cons', disabled=True)
+        elif laden_ballast == 'Ballast':
+            full_laden = st.number_input("CHARTER PARTY SPEED ", value=matching_row['BALLAST SPEED'],
+                                         key='charter_speed', disabled=True)
+            me_full = st.number_input("CHARTER PARTY ME FO CONS ", value=matching_row['BALLAST ME FO CONS'],
+                                      key='me_cons', disabled=True)
+            aux_full = st.number_input("CHARTER PARTY AE FO CONS ", value=matching_row['BALLAST AE FO CONS'],
+                                       key='ae_cons', disabled=True)
+            total_VLSFO = st.number_input(" CHARTER PARTY VLSFO CONS", value=matching_row['BALLAST VLSFO CONS'],
+                                          key='vlsfo_cons', disabled=True)
 
-            st.success("Vessel Speed meets CP Requirement")
-        else:
-            st.error("Vessel Speed exceeds CP Requirement")
+    else:
+        st.warning("No data found for the provided speed.")
 
-        if vessel_con <= total:
+    vessel_con = st.number_input("Actual Total FO Consumption (ME+AE): ")
 
-            st.success("FO Consumption meets CP Requirement")
+    if vessel_con <= total_VLSFO:
 
-        else:
-            st.error("FO Consumption exceeds CP Requirement")
+        st.success("FO Consumption meets CP Requirement")
 
-        if actual_speed <= eco_laden and vessel_con <= total:
-            st.success("Speed and FO Con meets the Charter Party requirements.")
-            submit = st.button("Submit data")
-            if submit:
-                worksheet.append_row([total, actual_speed, vessel_con])
-                st.success("Data submitted \U0001F44D")
-            else:
-                st.warning("Data not submitted.")
-        else:
-            st.error("The vessel does not meet the Charter Party requirements.")
-            reason2 = st.text_input("Reason for not meeting the CP Requirement:")
-            if reason2:
-                confirmed = st.checkbox("Are you sure you want to submit the data? click ")
-                if confirmed:
-                    with st.spinner(f"Data Saving...."):
-                        worksheet.append_row([total, actual_speed, vessel_con, reason2])
-
-                else:
-                    st.warning("Data not submitted.")
-            else:
-                st.warning("Please provide a reason for not meeting the CP Requirement.")
-
-
-
-    elif should1 == 'BALLAST':
-
-        st.write("CHARTER PARTY ECO SPEED - BALLAST")
-        eco_ballast = st.number_input("Charter Party Eco Speed - ballast : ")
-        me_eco = st.number_input("Charter Party Main Engine Consumption - ECO Speed (Ballast) ")
-        aux_eco = st.number_input("Charter Party Auxiliary Engine Consumption - ECO Speed (Ballast) ")
-        total1 = me_eco + aux_eco
-        st.write("Charter Party Total Con (ME + AE) :")
-        st.write(total1)
-
-        st.write("ACTUAL SPEED & FO CONSUMPTION")
-
-        actual_speed1 = st.number_input("Actual Vessel Speed : ")
-        vessel_con1 = st.number_input("Actual Total FO Consumption (ME+AE): ")
-
-        if actual_speed1 <= eco_ballast:
-
-            st.success("Vessel Speed meets CP Requirement")
-        else:
-            st.error("Vessel Speed exceeds CP Requirement")
-
-        if vessel_con1 <= total1:
-
-            st.success("FO Consumption meets CP Requirement")
-
-        else:
-            st.error("FO Consumption exceeds CP Requirement")
-
-        if actual_speed1 <= eco_ballast and vessel_con1 <= total1:
-            st.success("Speed and FO Con meets the Charter Party requirements.")
-            submit = st.button("Submit data")
-            if submit:
-                worksheet.append_row([total1, actual_speed1, vessel_con1])
-                st.success("Data submitted \U0001F44D")
-            else:
-                st.warning("Data not submitted.")
-        else:
-            st.error("The vessel does not meet the Charter Party requirements.")
-            reason2 = st.text_input("Reason for not meeting the CP Requirement:")
-            if reason2:
-                confirmed = st.checkbox("Are you sure you want to submit the data? click ")
-                if confirmed:
-                    with st.spinner(f"Data Saving...."):
-                        worksheet.append_row([total1, actual_speed1, vessel_con1, reason2])
-
-                else:
-                    st.warning("Data not submitted.")
-            else:
-                st.warning("Please provide a reason for not meeting the CP Requirement.")
-
-
-#FULL SPEED
-
-
-elif should == 'Vessel Instructed to go in FULL Speed':
-    should1 = st.selectbox('Laden/Ballast', ('LADEN', 'BALLAST'))
-
-    if should1 == 'LADEN':
-
-        st.write("CHARTER PARTY FULL SPEED - LADEN")
-        full_laden = st.number_input("Charter Party Full Speed - Laden : ")
-        me_full = st.number_input("Charter Party Main Engine Consumption - Full Speed (Laden)")
-        aux_full = st.number_input("Charter Party Auxiliary Engine Consumption - Full Speed (Laden)")
-        total2 = me_full + aux_full
-        st.write("Charter Party Total Con (ME + AE) :")
-        st.write(total2)
-
-        st.write("ACTUAL SPEED & FO CONSUMPTION")
-
-        actual_speed2 = st.number_input("Actual Vessel Speed : ")
-        vessel_con2 = st.number_input("Actual Total FO Consumption (ME+AE): ")
-
-        if actual_speed2 <= full_laden:
-
-            st.success("Vessel Speed meets CP Requirement")
-        else:
-            st.error("Vessel Speed exceeds CP Requirement")
-
-
-        if vessel_con2 <= total2:
-
-            st.success("FO Consumption meets CP Requirement")
-
-        else:
-            st.error("FO Consumption exceeds CP Requirement")
-
-        if actual_speed2 <= full_laden and vessel_con2<= total2:
-            st.success("Speed and FO Con meets the Charter Party requirements.")
-            submit = st.button("Submit data")
-            if submit:
-                worksheet.append_row([total2, actual_speed2, vessel_con2])
-                st.success("Data submitted \U0001F44D")
-            else:
-                st.warning("Data not submitted.")
-        else:
-            st.error("The vessel does not meet the Charter Party requirements.")
-            reason2 = st.text_input("Reason for not meeting the CP Requirement:")
-            if reason2:
-                confirmed = st.checkbox("Are you sure you want to submit the data? click ")
-                if confirmed:
-                    with st.spinner(f"Data Saving...."):
-                        worksheet.append_row([total2, actual_speed2, vessel_con2, reason2])
-
-                else:
-                    st.warning("Data not submitted.")
-            else:
-                st.warning("Please provide a reason for not meeting the CP Requirement.")
-
-
-
-    elif should1 == 'BALLAST':
-
-        st.write("CHARTER PARTY FULL SPEED - BALLAST")
-        full_ballast = st.number_input("Charter Party Full Speed - Ballast : ")
-        me_ballast = st.number_input("Charter Party Main Engine Consumption - Full Speed (Ballast) ")
-        aux_ballast = st.number_input("Charter Party Auxiliary Engine Consumption - Full Speed (Ballast) ")
-        total3 = me_ballast + aux_ballast
-        st.write("Charter Party Total Con (ME + AE) :")
-        st.write(total3)
-
-        st.write("ACTUAL SPEED & FO CONSUMPTION")
-
-        actual_speed3 = st.number_input("Actual Vessel Speed : ")
-        vessel_con3 = st.number_input("Actual Total FO Consumption (ME+AE): ")
-
-
-        if actual_speed3 <= full_ballast:
-
-            st.success("Vessel Speed meets CP Requirement")
-        else:
-            st.error("Vessel Speed exceeds CP Requirement")
-
-
-        if vessel_con3 <= total3:
-
-            st.success("FO Consumption meets CP Requirement")
-
-        else:
-            st.error("FO Consumption exceeds CP Requirement")
-
-        if actual_speed3 <= full_ballast and vessel_con3 <= total3:
-            st.success("Speed and FO Con meets the Charter Party requirements.")
-            submit = st.button("Submit data")
-            if submit:
-                worksheet.append_row([total3, actual_speed3, vessel_con3])
-                st.success("Data submitted \U0001F44D")
-            else:
-                st.warning("Data not submitted.")
-        else:
-            st.error("The vessel does not meet the Charter Party requirements.")
-            reason3 = st.text_input("Reason for not meeting the CP Requirement:")
-            if reason3:
-                confirmed = st.checkbox("Are you sure you want to submit the data? click ")
-                if confirmed:
-                    with st.spinner(f"Data Saving...."):
-                        worksheet.append_row([total3, actual_speed3, vessel_con3, reason3])
-
-                else:
-                    st.warning("Data not submitted.")
-            else:
-                st.warning("Please provide a reason for not meeting the CP Requirement.")
+    else:
+        st.error("FO Consumption exceeds CP Requirement")
+        reason2 = st.text_area("Reason for over consuming :")
+        extra = vessel_con - total_VLSFO
+        rounded_number = round(extra, 2)
+        st.write(rounded_number, " MT FO Consumed Extra")
 
 
 
