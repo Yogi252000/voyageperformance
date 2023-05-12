@@ -23,9 +23,6 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_name("key.json", scope)
 client = gspread.authorize(creds)
 
-# Select the worksheet by name
-worksheet = client.open("Vessel Performance").worksheet("Sheet42")
-
 # User input
 vessel_name = st.selectbox('Vessel Name', ('GCL Yamuna', 'GCL Mahanadi','GCL Ganga','GCL Sabarmati','GCL Narmada','GCL Tapi','AM Tarang','AM Kirti',
                                            'AM Umang','Vinayak','True Cartier','Bunun Wisdom','Amis Wisdom I','Amis Wisdom II','Amis Wisdom III',
