@@ -40,9 +40,9 @@ st.subheader('Report Type')
 report_type = st.selectbox('Select Report Type',('Commencement of Sea Passage to Noon', 'Noon to Noon','Noon to End of Sea Passage'))
 
 if report_type == "Commencement of Sea Passage to Noon":
-    date = st.date_input("UTC Date (Departure)")
+    date = st.date_input("UTC Date (COSP)")
     date_str = date.strftime("%Y-%m-%d")
-    time = st.time_input("UTC Time (Departure)")
+    time = st.time_input("UTC Time (COSP)")
     time_str = time.strftime('%H:%M:%S')
 
     nd = st.date_input("Noon Date (UTC)")
@@ -261,9 +261,9 @@ elif report_type == "Noon to Noon":
 
 
 elif report_type == "Noon to End of Sea Passage":
-    noon = st.date_input("Last Noon Date(UTC) ")
+    noon = st.date_input("Last Noon Date(EOSP) ")
     noon_str = noon.strftime("%Y-%m-%d")
-    g = st.time_input("Last Noon Time(UTC)")
+    g = st.time_input("Last Noon Time(EOSP)")
     g_str = g.strftime('%H:%M:%S')
     date1 = st.date_input("UTC Date (Arrival)")
     date1_str = date1.strftime("%Y-%m-%d")
