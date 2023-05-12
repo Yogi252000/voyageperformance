@@ -55,7 +55,6 @@ if report_type == "Commencement of Sea Passage to Noon":
     aft = st.text_input("Draft(Aftward) (m)")
     dis = st.text_input("Displacement (Ton)")
     cargo = st.text_input("Total cargo loaded onboard (MT)")
-    time_elapsed = st.text_input("Time Elapsed from Last Report")
     wind_force = st.selectbox("Wind Force", (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
     actual_wind_direction = st.selectbox('Actual Wind Direction', ('E', 'N', 'S', 'W', 'NE', 'SE', 'SW', 'NW'))
     relative_wind_direction = st.selectbox('Relative Wind Direction', (
